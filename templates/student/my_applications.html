@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}My Applications | InternTrack{% endblock %}
+
+{% block content %}
+<div class="card-header" style="border: none; padding-bottom: 0;">
+  <div>
+    <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--navy-900);">Application Progress Tracker</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      Monitor candidate pipeline milestones and recruiter review decisions in real time.
+    </p>
+  </div>
+  <a href="{{ url_for('internships_list') }}" class="btn btn-primary">Find More Internships</a>
+</div>
+
+{% if applications %}
+  <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem;">
+    {% for app in applications %}
+      <div class="card" style="margin-bottom: 0; padding: 1.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+          <div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">
+              Application #{{ app.id }} &bull; Submitted {{ app.applied_at[:10] }}
+            </div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--navy-900); margin-top: 0.25rem;">
+              {{ app.title }}
+            </h2>
+            <div style="font-size: 1rem; color: var(--primary); font-weight: 600;">
+              {{ app.company }} &bull; <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: normal;">{{ app.location }} ({{ app.internship_type }})</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="badge badge-{{ app.status|lower|replace(' ', '-') }}" style="font-size: 0.9rem; padding: 0.35rem 0.85rem;">
+              {{ app.status }}
+            </span>
+            <a href="{{ url_for('view_resume', filename=app.resume_filename) }}" target="_blank" class="btn btn-secondary btn-sm">
+              📄 Submitted Resume
+            </a>
+            <a href="{{ url_for('internship_detail', internship_id=app.internship_id) }}" class="btn btn-outline btn-sm">
+              View Posting
+            </a>
+          </div>
+        </div>
+
+        <!-- Visual Recruitment Stepper Timeline -->
+        <div style="margin-top: 1.5rem;">
+          {% if app.status == 'Rejected' %}
+            <div style="background: var(--danger-light); border: 1px solid var(--danger-border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-size: 1.5rem;">🛑</span>
+              <div>
+                <strong style="color: var(--danger-text); font-size: 0.95rem;">Application Not Selected</strong>
+                <p style="color: var(--danger-text); font-size: 0.85rem; margin-top: 0.15rem;">
+                  Thank you for applying. The hiring team has decided to pursue other candidates for this specific cycle. We encourage you to explore other openings.
+                </p>
+              </div>
+            </div>
+          {% else %}
+            <!-- Normal Pipeline: Applied -> Under Review -> Shortlisted -> Selected -->
+            <div class="timeline-stepper">
+              <!-- Step 1: Applied -->
+              <div class="step-item {% if app.status in ['Applied', 'Under Review', 'Shortlisted', 'Selected'] %}completed{% endif %}">
+                <div class="step-bubble">✓</div>
+                <div class="step-label">Applied</div>
+              </div>
+
+              <!-- Step 2: Under Review -->
+              <div class="step-item {% if app.status in ['Under Review', 'Shortlisted', 'Selected'] %}completed{% elif app.status == 'Applied' %}active{% endif %}">
+                <div class="step-bubble">
+                  {% if app.status in ['Under Review', 'Shortlisted', 'Selected'] %}✓{% else %}2{% endif %}
+                </div>
+                <div class="step-label">Under Review</div>
+              </div>
+
+              <!-- Step 3: Shortlisted -->
+              <div class="step-item {% if app.status in ['Shortlisted', 'Selected'] %}completed{% elif app.status == 'Under Review' %}active{% endif %}">
+                <div class="step-bubble">
+                  {% if app.status in ['Shortlisted', 'Selected'] %}✓{% else %}3{% endif %}
+                </div>
+                <div class="step-label">Shortlisted</div>
+              </div>
+
+              <!-- Step 4: Selected -->
+              <div class="step-item {% if app.status == 'Selected' %}completed active{% endif %}">
+                <div class="step-bubble">
+                  {% if app.status == 'Selected' %}★{% else %}4{% endif %}
+                </div>
+                <div class="step-label">Selected</div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card" style="text-align: center; padding: 4rem 1.5rem; margin-top: 1.5rem;">
+    <div style="font-size: 2.5rem; margin-bottom: 1rem;">📋</div>
+    <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--navy-900);">No applications yet</h2>
+    <p style="color: var(--text-muted); max-width: 480px; margin: 0.5rem auto 1.5rem auto;">
+      You haven't submitted any internship applications yet. Explore our open positions and submit your profile today.
+    </p>
+    <a href="{{ url_for('internships_list') }}" class="btn btn-primary">Explore Available Internships</a>
+  </div>
+{% endif %}
+{% endblock %}

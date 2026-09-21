@@ -1,0 +1,85 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Internship Postings | Admin | InternTrack{% endblock %}
+
+{% block admin_content %}
+<div class="card-header" style="border: none; padding-bottom: 0; margin-bottom: 1.5rem;">
+  <div>
+    <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--navy-900);">Internship Management</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      Create, edit, toggle visibility, and monitor applicant volume across all postings.
+    </p>
+  </div>
+  <a href="{{ url_for('admin_new_internship') }}" class="btn btn-primary">+ Post New Internship</a>
+</div>
+
+<div class="card">
+  {% if internships %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Role & Company</th>
+            <th>Type / Location</th>
+            <th>Duration</th>
+            <th>Deadline</th>
+            <th>Visibility</th>
+            <th>Submissions</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in internships %}
+            <tr>
+              <td>#{{ item.id }}</td>
+              <td>
+                <strong style="color: var(--navy-900);">{{ item.title }}</strong><br>
+                <span style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">{{ item.company }}</span>
+              </td>
+              <td>
+                <span class="badge badge-applied">{{ item.internship_type }}</span><br>
+                <small style="color: var(--text-muted);">{{ item.location }}</small>
+              </td>
+              <td>{{ item.duration }}</td>
+              <td>{{ item.deadline }}</td>
+              <td>
+                <form method="POST" action="{{ url_for('admin_toggle_internship_status', internship_id=item.id) }}" style="display: inline;">
+                  <button type="submit" class="badge {% if item.is_active %}badge-active{% else %}badge-inactive{% endif %}" style="cursor: pointer; border: none;" title="Click to toggle status">
+                    {% if item.is_active %}Active (Visible){% else %}Inactive (Hidden){% endif %}
+                  </button>
+                </form>
+              </td>
+              <td>
+                <a href="{{ url_for('admin_applications', internship_id=item.id) }}" class="badge badge-applied" style="text-decoration: none;">
+                  {{ item.applicant_count }} applicant(s)
+                </a>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 0.4rem;">
+                  <a href="{{ url_for('internship_detail', internship_id=item.id) }}" target="_blank" class="btn btn-secondary btn-sm" title="Preview Public Page">
+                    👁️
+                  </a>
+                  <a href="{{ url_for('admin_edit_internship', internship_id=item.id) }}" class="btn btn-outline btn-sm">
+                    Edit
+                  </a>
+                  <form method="POST" action="{{ url_for('admin_delete_internship', internship_id=item.id) }}" class="form-confirm-action" data-confirm-message="Are you sure you want to delete '{{ item.title }}'? This permanently removes all applicant submissions for this listing." style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div style="text-align: center; padding: 3rem 1.5rem;">
+      <p style="color: var(--text-muted); margin-bottom: 1.25rem;">No internship positions created yet.</p>
+      <a href="{{ url_for('admin_new_internship') }}" class="btn btn-primary">Create First Posting</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

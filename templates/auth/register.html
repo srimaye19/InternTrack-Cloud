@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Candidate Account | InternTrack{% endblock %}
+
+{% block content %}
+<div style="max-width: 540px; margin: 2.5rem auto;">
+  <div class="card" style="padding: 2.25rem; box-shadow: var(--shadow-md);">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div class="brand-icon" style="margin: 0 auto 1rem auto; width: 42px; height: 42px; font-size: 1.2rem;">IT</div>
+      <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--navy-900);">Create Candidate Account</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.35rem;">Discover opportunities and track your internship applications</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('register') }}">
+      <div class="form-group">
+        <label for="name" class="form-label">Full Name *</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Alex Johnson" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address *</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="e.g. alex.johnson@example.com" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="password" class="form-label">Password *</label>
+          <input type="password" id="password" name="password" class="form-control" minlength="6" placeholder="Min 6 characters" required>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm_password" class="form-label">Confirm Password *</label>
+          <input type="password" id="confirm_password" name="confirm_password" class="form-control" minlength="6" placeholder="Re-enter password" required>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-color); margin: 1.5rem 0 1rem 0; padding-top: 1rem;">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-800); margin-bottom: 0.75rem;">
+          Optional Academic Profile
+        </h3>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="college" class="form-label">College / University</label>
+          <input type="text" id="college" name="college" class="form-control" placeholder="e.g. State University">
+        </div>
+
+        <div class="form-group">
+          <label for="degree" class="form-label">Degree Program</label>
+          <input type="text" id="degree" name="degree" class="form-control" placeholder="e.g. B.S. Computer Science">
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="graduation_year" class="form-label">Graduation Year</label>
+          <input type="text" id="graduation_year" name="graduation_year" class="form-control" placeholder="e.g. 2027">
+        </div>
+
+        <div class="form-group">
+          <label for="phone" class="form-label">Phone Number</label>
+          <input type="tel" id="phone" name="phone" class="form-control" placeholder="e.g. +1 (555) 019-2834">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem; padding: 0.7rem;">
+        Create Account
+      </button>
+    </form>
+
+    <div style="margin-top: 1.75rem; text-align: center; font-size: 0.875rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+      Already have an account? <a href="{{ url_for('login') }}" style="font-weight: 600;">Sign in here</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

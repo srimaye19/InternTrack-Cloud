@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Internship Marketplace | InternTrack{% endblock %}
+
+{% block content %}
+<div class="card-header" style="border: none; padding-bottom: 0;">
+  <div>
+    <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--navy-900);">Available Internships</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      Discover verified engineering and technical opportunities from hiring partners.
+    </p>
+  </div>
+</div>
+
+<!-- Search & Advanced Filter Card -->
+<div class="card" style="margin-top: 1.25rem; margin-bottom: 2rem;">
+  <form method="GET" action="{{ url_for('internships_list') }}">
+    <!-- Search Bar -->
+    <div class="form-group" style="margin-bottom: 1rem;">
+      <label class="form-label" for="search">Keyword Search</label>
+      <input type="text" id="search" name="q" value="{{ query }}" class="form-control" placeholder="Search internships, companies or skills (e.g. Cloud, Python, Docker)...">
+    </div>
+
+    <!-- Multi-field Filters -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: flex-end;">
+      <div>
+        <label class="form-label" for="type">Workplace Type</label>
+        <select id="type" name="type" class="form-control">
+          <option value="">All Types</option>
+          <option value="Remote" {% if type_filter == 'Remote' %}selected{% endif %}>Remote</option>
+          <option value="Hybrid" {% if type_filter == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+          <option value="On-site" {% if type_filter == 'On-site' %}selected{% endif %}>On-site</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label" for="location">Location</label>
+        <input type="text" id="location" name="location" value="{{ location_filter }}" class="form-control" placeholder="e.g. San Jose, Austin">
+      </div>
+
+      <div>
+        <label class="form-label" for="skills">Skills Tag</label>
+        <input type="text" id="skills" name="skills" value="{{ skills_filter }}" class="form-control" placeholder="e.g. Linux, SQL">
+      </div>
+
+      <div>
+        <label class="form-label" for="duration">Duration</label>
+        <input type="text" id="duration" name="duration" value="{{ duration_filter }}" class="form-control" placeholder="e.g. 3 Months">
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="submit" class="btn btn-primary" style="flex: 1;">Filter</button>
+        {% if query or location_filter or type_filter or duration_filter or skills_filter %}
+          <a href="{{ url_for('internships_list') }}" class="btn btn-secondary">Clear</a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Internship Cards Grid -->
+{% if internships %}
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+    {% for item in internships %}
+      <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <div>
+              <span class="badge badge-applied" style="margin-bottom: 0.4rem;">{{ item.internship_type }}</span>
+              <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--navy-900);">
+                {{ item.title }}
+              </h2>
+            </div>
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); background: var(--gray-100); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); white-space: nowrap;">
+              {{ item.duration }}
+            </span>
+          </div>
+
+          <div style="font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">
+            🏢 {{ item.company }}
+          </div>
+
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+            📍 {{ item.location }} &bull; ⏳ Deadline: {{ item.deadline }}
+          </div>
+
+          <p style="font-size: 0.9rem; color: var(--navy-700); margin-bottom: 1.25rem; line-height: 1.5;">
+            {{ item.description[:140] }}{% if item.description|length > 140 %}...{% endif %}
+          </p>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+              {% for s in item.skills.split(',') %}
+                <span style="background: var(--gray-100); color: var(--navy-700); font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;">
+                  {{ s.strip() }}
+                </span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <small style="color: var(--text-muted);">Posted {{ item.created_at[:10] }}</small>
+          <a href="{{ url_for('internship_detail', internship_id=item.id) }}" class="btn btn-primary btn-sm">
+            View Details &rarr;
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card" style="text-align: center; padding: 4rem 1.5rem;">
+    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔍</div>
+    <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--navy-900);">No internships match your search</h2>
+    <p style="color: var(--text-muted); max-width: 440px; margin: 0.5rem auto 1.5rem auto;">
+      Try broadening your search keywords, clearing location filters, or checking back soon for new openings.
+    </p>
+    <a href="{{ url_for('internships_list') }}" class="btn btn-secondary">Clear Search Filters</a>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}InternTrack | Discover opportunities. Build your future.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="landing-hero">
+  <span class="landing-hero-tag">Career Acceleration Platform</span>
+  <h1 class="landing-hero-title">Find the right internship.<br>Build real-world experience.</h1>
+  <p class="landing-hero-sub">
+    Discover internship opportunities, apply with confidence, and track your applications from one place.
+  </p>
+  <div class="landing-hero-cta">
+    <a href="{{ url_for('internships_list') }}" class="btn btn-primary btn-lg">Explore Internships</a>
+    {% if not session.get('user_id') %}
+      <a href="{{ url_for('register') }}" class="btn btn-secondary btn-lg">Create Account</a>
+    {% else %}
+      <a href="{{ url_for('student_dashboard' if session.get('user_role') == 'student' else 'admin_dashboard') }}" class="btn btn-secondary btn-lg">Go to Dashboard</a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Overview Metrics -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Active Positions</div>
+    <div class="stat-value">{{ total_internships }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Applications Managed</div>
+    <div class="stat-value">{{ total_applications }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Registered Candidates</div>
+    <div class="stat-value">{{ total_students }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Average Review Time</div>
+    <div class="stat-value">48h</div>
+  </div>
+</div>
+
+<!-- Featured Internships Section -->
+<div class="card" style="margin-top: 2rem;">
+  <div class="card-header">
+    <div>
+      <h2 class="card-title">Featured Opportunities</h2>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.2rem;">
+        Top internship openings across engineering, cloud, and modern technology sectors.
+      </p>
+    </div>
+    <a href="{{ url_for('internships_list') }}" class="btn btn-outline btn-sm">View All &rarr;</a>
+  </div>
+
+  {% if featured_internships %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Role & Company</th>
+            <th>Workplace Type</th>
+            <th>Location</th>
+            <th>Duration</th>
+            <th>Deadline</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in featured_internships %}
+            <tr>
+              <td>
+                <strong style="color: var(--navy-900); font-size: 1rem;">{{ item.title }}</strong><br>
+                <span style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">{{ item.company }}</span>
+              </td>
+              <td>
+                <span class="badge badge-applied">{{ item.internship_type }}</span>
+              </td>
+              <td>{{ item.location }}</td>
+              <td>{{ item.duration }}</td>
+              <td>{{ item.deadline }}</td>
+              <td style="text-align: right;">
+                <a href="{{ url_for('internship_detail', internship_id=item.id) }}" class="btn btn-secondary btn-sm">
+                  View Details
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">New positions opening soon.</p>
+  {% endif %}
+</div>
+
+<!-- How It Works Section -->
+<section style="margin: 4.5rem 0 3rem 0;">
+  <div class="section-header">
+    <h2 class="section-title">How InternTrack Works</h2>
+    <p class="section-subtitle">A streamlined three-step workflow designed to take you from discovery to selection.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3 class="feature-title">1. Discover Roles</h3>
+      <p class="feature-desc">
+        Explore verified opportunities tailored to your technical skills, preferred location, and career ambitions.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3 class="feature-title">2. One-Click Apply</h3>
+      <p class="feature-desc">
+        Upload your professional resume once or submit customized documents directly to hiring teams with zero friction.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <h3 class="feature-title">3. Track Progress</h3>
+      <p class="feature-desc">
+        Receive transparent updates through each recruitment milestone from review to shortlist and final selection.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Why InternTrack Section -->
+<section style="margin-bottom: 4.5rem;">
+  <div class="section-header">
+    <h2 class="section-title">Why Candidates Choose InternTrack</h2>
+    <p class="section-subtitle">Everything you need to launch your career with confidence and transparency.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3 class="feature-title">Direct Hiring Pipelines</h3>
+      <p class="feature-desc">
+        Connect directly with internal recruiters and hiring managers without middlemen or stale automated aggregators.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3 class="feature-title">Candidate Data Privacy</h3>
+      <p class="feature-desc">
+        Your personal records and uploaded resumes are protected with strict authorization boundaries and encrypted transmission.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3 class="feature-title">Real-Time Progression</h3>
+      <p class="feature-desc">
+        Never wonder where your submission stands. Clear status indicators keep you informed at every decision stage.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Career Opportunities Categories -->
+<section style="margin-bottom: 4rem;">
+  <div class="section-header">
+    <h2 class="section-title">Explore by High-Demand Disciplines</h2>
+    <p class="section-subtitle">Target positions across the most active industry tracks.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+    <a href="{{ url_for('internships_list', skills='Cloud') }}" class="card" style="text-align: center; margin-bottom: 0; padding: 1.5rem 1rem; border-color: var(--gray-200);">
+      <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">☁️</div>
+      <strong style="color: var(--navy-900);">Cloud &amp; DevOps</strong>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Infrastructure &amp; CI/CD</div>
+    </a>
+    <a href="{{ url_for('internships_list', skills='Python') }}" class="card" style="text-align: center; margin-bottom: 0; padding: 1.5rem 1rem; border-color: var(--gray-200);">
+      <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">💻</div>
+      <strong style="color: var(--navy-900);">Backend Engineering</strong>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Python, APIs &amp; Databases</div>
+    </a>
+    <a href="{{ url_for('internships_list', skills='Security') }}" class="card" style="text-align: center; margin-bottom: 0; padding: 1.5rem 1rem; border-color: var(--gray-200);">
+      <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">🛡️</div>
+      <strong style="color: var(--navy-900);">Cybersecurity</strong>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">IAM, Audits &amp; Perimeters</div>
+    </a>
+    <a href="{{ url_for('internships_list', skills='Data') }}" class="card" style="text-align: center; margin-bottom: 0; padding: 1.5rem 1rem; border-color: var(--gray-200);">
+      <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">📊</div>
+      <strong style="color: var(--navy-900);">Data Science &amp; ETL</strong>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Analytics &amp; Data Pipelines</div>
+    </a>
+  </div>
+</section>
+
+<!-- Call to Action Banner -->
+<div style="background: var(--navy-900); color: #ffffff; border-radius: var(--radius-lg); padding: 3.5rem 2rem; text-align: center; margin-bottom: 3rem;">
+  <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.75rem;">Ready to take the next step in your career?</h2>
+  <p style="color: var(--gray-300); max-width: 600px; margin: 0 auto 2rem auto; font-size: 1.05rem;">
+    Join ambitious candidates using InternTrack to discover top internships and build real-world experience.
+  </p>
+  <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+    <a href="{{ url_for('internships_list') }}" class="btn btn-accent btn-lg">Browse Internships Now</a>
+    {% if not session.get('user_id') %}
+      <a href="{{ url_for('register') }}" class="btn btn-outline btn-lg" style="color: #ffffff; border-color: var(--gray-500);">Sign Up for Free</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

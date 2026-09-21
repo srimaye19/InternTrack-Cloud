@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables & local secrets
+.env
+.env.local
+
+# SQLite Database files
+*.db
+*.sqlite3
+
+# Uploaded student resumes & files
+uploads/
+!uploads/.gitkeep
+
+# IDEs & OS files
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

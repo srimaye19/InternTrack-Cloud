@@ -1,0 +1,106 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Application #{{ application.id }} Review | Admin | InternTrack{% endblock %}
+
+{% block admin_content %}
+<div style="max-width: 900px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('admin_applications') }}" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.9rem; font-weight: 500;">
+      &larr; Back to applications list
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title" style="font-size: 1.4rem;">
+          Candidate Application Review #{{ application.id }}
+        </h1>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Submitted on {{ application.applied_at }}</span>
+      </div>
+      <div>
+        <span class="badge badge-{{ application.status|lower|replace(' ', '-') }}" style="font-size: 0.95rem; padding: 0.35rem 0.85rem;">
+          {{ application.status }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Candidate & Target Position Cards -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+      <!-- Candidate Information -->
+      <div style="background: var(--gray-50); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--border-color);">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;">
+          Candidate Details
+        </h3>
+        <div style="font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.45rem;">
+          <div><strong>Name:</strong> {{ application.student_name }}</div>
+          <div><strong>Email:</strong> {{ application.student_email }}</div>
+          {% if application.student_phone %}<div><strong>Phone:</strong> {{ application.student_phone }}</div>{% endif %}
+          {% if application.student_college %}<div><strong>College:</strong> {{ application.student_college }}</div>{% endif %}
+          {% if application.student_degree %}<div><strong>Degree:</strong> {{ application.student_degree }}</div>{% endif %}
+          {% if application.student_skills %}<div><strong>Skills:</strong> {{ application.student_skills }}</div>{% endif %}
+          {% if application.student_linkedin %}<div><strong>LinkedIn:</strong> <a href="{{ application.student_linkedin }}" target="_blank">Profile Link &rarr;</a></div>{% endif %}
+          {% if application.student_github %}<div><strong>GitHub:</strong> <a href="{{ application.student_github }}" target="_blank">Profile Link &rarr;</a></div>{% endif %}
+        </div>
+      </div>
+
+      <!-- Target Position -->
+      <div style="background: var(--gray-50); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--border-color);">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;">
+          Target Position
+        </h3>
+        <div style="font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.45rem;">
+          <div><strong>Title:</strong> {{ application.internship_title }}</div>
+          <div><strong>Company:</strong> {{ application.internship_company }}</div>
+          <div><strong>Location:</strong> {{ application.internship_location }}</div>
+          <div><strong>Duration:</strong> {{ application.internship_duration }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resume Document Card -->
+    <div style="border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: center; background: #ffffff;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="font-size: 2rem;">📄</div>
+        <div>
+          <strong style="color: var(--navy-900);">Submitted Candidate Resume</strong>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">
+            File Identifier: <code>{{ application.resume_filename }}</code>
+          </div>
+        </div>
+      </div>
+      <div>
+        <a href="{{ url_for('view_resume', filename=application.resume_filename) }}" target="_blank" class="btn btn-secondary">
+          View / Download Resume
+        </a>
+      </div>
+    </div>
+
+    <!-- Pipeline Status Update Form -->
+    <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+      <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.75rem;">
+        Update Application Status
+      </h3>
+
+      <form method="POST" action="{{ url_for('admin_update_status', application_id=application.id) }}" class="form-confirm-action" data-confirm-message="Are you sure you want to update this candidate's application status?">
+        <div class="form-group">
+          <label class="form-label" for="status">Select Pipeline Progression Stage *</label>
+          <select id="status" name="status" class="form-control" style="font-size: 1rem; padding: 0.75rem;" required>
+            {% for s in valid_statuses %}
+              <option value="{{ s }}" {% if application.status == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+          <span class="form-hint">
+            Standard progression: Applied &rarr; Under Review &rarr; Shortlisted &rarr; Selected (or Rejected).
+          </span>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+          <a href="{{ url_for('admin_applications') }}" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">Update Status</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}{% if internship %}Edit {{ internship.title }}{% else %}New Internship Listing{% endif %} | Admin | InternTrack{% endblock %}
+
+{% block admin_content %}
+<div style="max-width: 900px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('admin_internships') }}" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.9rem; font-weight: 500;">
+      &larr; Back to positions
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title" style="font-size: 1.4rem;">
+        {% if internship %}Edit Position: {{ internship.title }}{% else %}Publish New Internship Listing{% endif %}
+      </h1>
+    </div>
+
+    <form method="POST" action="{% if internship %}{{ url_for('admin_edit_internship', internship_id=internship.id) }}{% else %}{{ url_for('admin_new_internship') }}{% endif %}">
+      <!-- Row 1: Title & Company -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="title">Position Title *</label>
+          <input type="text" id="title" name="title" class="form-control" value="{{ internship.title if internship else '' }}" placeholder="e.g. Cloud Infrastructure Engineer Intern" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company">Company / Organization *</label>
+          <input type="text" id="company" name="company" class="form-control" value="{{ internship.company if internship else '' }}" placeholder="e.g. CloudScale Systems" required>
+        </div>
+      </div>
+
+      <!-- Row 2: Type, Location, Duration, Deadline -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="internship_type">Workplace Type *</label>
+          <select id="internship_type" name="internship_type" class="form-control" required>
+            {% for t in valid_types %}
+              <option value="{{ t }}" {% if internship and internship.internship_type == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="location">Location *</label>
+          <input type="text" id="location" name="location" class="form-control" value="{{ internship.location if internship else '' }}" placeholder="e.g. Remote or San Jose, CA" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="duration">Duration *</label>
+          <input type="text" id="duration" name="duration" class="form-control" value="{{ internship.duration if internship else '' }}" placeholder="e.g. 3 Months" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="deadline">Application Deadline *</label>
+          <input type="date" id="deadline" name="deadline" class="form-control" value="{{ internship.deadline if internship else '' }}" required>
+        </div>
+      </div>
+
+      <!-- Skills Tags -->
+      <div class="form-group">
+        <label class="form-label" for="skills">Key Skills Tagged *</label>
+        <input type="text" id="skills" name="skills" class="form-control" value="{{ internship.skills if internship else '' }}" placeholder="e.g. Python, Docker, Linux, Cloud Architecture" required>
+        <span class="form-hint">Comma-separated skills used for keyword searches and candidate matching.</span>
+      </div>
+
+      <!-- Description / About -->
+      <div class="form-group">
+        <label class="form-label" for="description">About the Role *</label>
+        <textarea id="description" name="description" class="form-control" rows="4" placeholder="Overview of the position, team mission, and impact..." required>{{ internship.description if internship else '' }}</textarea>
+      </div>
+
+      <!-- Responsibilities -->
+      <div class="form-group">
+        <label class="form-label" for="responsibilities">Key Responsibilities</label>
+        <textarea id="responsibilities" name="responsibilities" class="form-control" rows="4" placeholder="- Build automated CI/CD workflows&#10;- Implement infrastructure as code&#10;- Monitor performance and logs">{{ internship.responsibilities if internship and internship.responsibilities else '' }}</textarea>
+      </div>
+
+      <!-- Required & Preferred Skills -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="required_skills">Required Qualifications</label>
+          <textarea id="required_skills" name="required_skills" class="form-control" rows="3" placeholder="Core requirements needed to qualify...">{{ internship.required_skills if internship and internship.required_skills else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="preferred_skills">Preferred Qualifications</label>
+          <textarea id="preferred_skills" name="preferred_skills" class="form-control" rows="3" placeholder="Bonus skills, extra coursework, or tooling experience...">{{ internship.preferred_skills if internship and internship.preferred_skills else '' }}</textarea>
+        </div>
+      </div>
+
+      <!-- Active Status Checkbox -->
+      <div class="form-group" style="margin-top: 1rem; background: var(--gray-50); padding: 1rem; border-radius: var(--radius); border: 1px solid var(--border-color);">
+        <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; font-weight: 600; color: var(--navy-900);">
+          <input type="checkbox" name="is_active" value="1" {% if not internship or internship.is_active %}checked{% endif %}>
+          Publish as Active (Visible in public marketplace)
+        </label>
+        <span class="form-hint" style="margin-left: 1.6rem;">
+          Uncheck to save as draft or temporarily hide from candidate listings.
+        </span>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 2rem;">
+        <a href="{{ url_for('admin_internships') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          {% if internship %}Save Changes{% else %}Publish Position{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

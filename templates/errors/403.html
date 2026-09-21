@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Access Denied | InternTrack{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 580px; margin: 4rem auto; text-align: center; padding: 3.5rem 1.5rem;">
+  <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+  <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--navy-900); margin-bottom: 0.5rem;">Access Denied</h1>
+  <p style="color: var(--text-muted); margin-bottom: 2rem;">
+    You do not possess the required permissions to access this administrative page or candidate document.
+  </p>
+  <div style="display: flex; justify-content: center; gap: 0.75rem;">
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Return Home</a>
+    <a href="{{ url_for('login') }}" class="btn btn-secondary">Sign In</a>
+  </div>
+</div>
+{% endblock %}

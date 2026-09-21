@@ -1,0 +1,109 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Candidate Applications | Admin | InternTrack{% endblock %}
+
+{% block admin_content %}
+<div class="card-header" style="border: none; padding-bottom: 0; margin-bottom: 1.5rem;">
+  <div>
+    <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--navy-900);">Application Submissions</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      Filter, review candidate resumes, and advance applicants through the hiring pipeline.
+    </p>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <form method="GET" action="{{ url_for('admin_applications') }}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+    <div style="flex: 2; min-width: 220px;">
+      <label class="form-label" for="internship_filter">Filter by Position</label>
+      <select id="internship_filter" name="internship_id" class="form-control">
+        <option value="">All Positions</option>
+        {% for item in internships %}
+          <option value="{{ item.id }}" {% if selected_internship_id == item.id|string %}selected{% endif %}>
+            {{ item.title }} ({{ item.company }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="flex: 1; min-width: 180px;">
+      <label class="form-label" for="status_filter">Filter by Status</label>
+      <select id="status_filter" name="status" class="form-control">
+        <option value="">All Statuses</option>
+        {% for s in valid_statuses %}
+          <option value="{{ s }}" {% if selected_status == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="display: flex; gap: 0.5rem;">
+      <button type="submit" class="btn btn-primary">Apply Filter</button>
+      {% if selected_internship_id or selected_status %}
+        <a href="{{ url_for('admin_applications') }}" class="btn btn-secondary">Clear</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Applications Table -->
+<div class="card">
+  {% if applications %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Candidate</th>
+            <th>Target Internship</th>
+            <th>Submission Date</th>
+            <th>Resume</th>
+            <th>Status</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+            <tr>
+              <td>#{{ app.id }}</td>
+              <td>
+                <strong style="color: var(--navy-900);">{{ app.student_name }}</strong><br>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">{{ app.student_email }}</span>
+                {% if app.student_college %}
+                  <div style="font-size: 0.75rem; color: var(--navy-600); margin-top: 0.15rem;">
+                    🏫 {{ app.student_college }}
+                  </div>
+                {% endif %}
+              </td>
+              <td>
+                <strong>{{ app.internship_title }}</strong><br>
+                <small style="color: var(--primary); font-weight: 600;">{{ app.internship_company }}</small>
+              </td>
+              <td>{{ app.applied_at[:10] }}</td>
+              <td>
+                <a href="{{ url_for('view_resume', filename=app.resume_filename) }}" target="_blank" class="btn btn-secondary btn-sm">
+                  📄 View Resume
+                </a>
+              </td>
+              <td>
+                <span class="badge badge-{{ app.status|lower|replace(' ', '-') }}">
+                  {{ app.status }}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <a href="{{ url_for('admin_application_detail', application_id=app.id) }}" class="btn btn-primary btn-sm">
+                  Review &amp; Status
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div style="text-align: center; padding: 3.5rem 1.5rem;">
+      <p style="color: var(--text-muted); font-size: 1rem;">No applications found matching the selected criteria.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

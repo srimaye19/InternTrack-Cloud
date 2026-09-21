@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ internship.title }} at {{ internship.company }} | InternTrack{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+  <a href="{{ url_for('internships_list') }}" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.9rem; font-weight: 500;">
+    &larr; Back to all opportunities
+  </a>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 2rem;">
+  <!-- Left Column: Detailed Job Description -->
+  <div>
+    <div class="card">
+      <div style="margin-bottom: 1.5rem;">
+        <span class="badge badge-applied" style="font-size: 0.825rem; margin-bottom: 0.5rem;">
+          {{ internship.internship_type }} &bull; {{ internship.duration }}
+        </span>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--navy-900); margin-top: 0.25rem;">
+          {{ internship.title }}
+        </h1>
+        <div style="font-size: 1.15rem; font-weight: 600; color: var(--primary); margin-top: 0.25rem;">
+          🏢 {{ internship.company }}
+        </div>
+      </div>
+
+      <!-- Quick Details Ribbon -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; background: var(--gray-50); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 2rem; font-size: 0.9rem;">
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.8rem; display: block; font-weight: 600; text-transform: uppercase;">Location</span>
+          <strong style="color: var(--navy-900);">{{ internship.location }}</strong>
+        </div>
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.8rem; display: block; font-weight: 600; text-transform: uppercase;">Duration</span>
+          <strong style="color: var(--navy-900);">{{ internship.duration }}</strong>
+        </div>
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.8rem; display: block; font-weight: 600; text-transform: uppercase;">Deadline</span>
+          <strong style="color: var(--navy-900);">{{ internship.deadline }}</strong>
+        </div>
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.8rem; display: block; font-weight: 600; text-transform: uppercase;">Posted</span>
+          <strong style="color: var(--navy-900);">{{ internship.created_at[:10] }}</strong>
+        </div>
+      </div>
+
+      <!-- 1. About the Role -->
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.75rem;">
+        About the Role
+      </h3>
+      <div style="color: var(--navy-700); line-height: 1.8; margin-bottom: 2rem; white-space: pre-line;">
+        {{ internship.description }}
+      </div>
+
+      <!-- 2. Responsibilities -->
+      {% if internship.responsibilities %}
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.75rem;">
+          Key Responsibilities
+        </h3>
+        <div style="color: var(--navy-700); line-height: 1.8; margin-bottom: 2rem; white-space: pre-line;">
+          {{ internship.responsibilities }}
+        </div>
+      {% endif %}
+
+      <!-- 3. Required Skills -->
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.75rem;">
+        Required Skills &amp; Qualifications
+      </h3>
+      {% if internship.required_skills %}
+        <div style="color: var(--navy-700); line-height: 1.8; margin-bottom: 1.5rem; white-space: pre-line;">
+          {{ internship.required_skills }}
+        </div>
+      {% endif %}
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+        {% for s in internship.skills.split(',') %}
+          <span style="background: var(--primary-light); color: var(--primary); font-size: 0.85rem; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600; border: 1px solid var(--primary-border);">
+            {{ s.strip() }}
+          </span>
+        {% endfor %}
+      </div>
+
+      <!-- 4. Preferred Skills -->
+      {% if internship.preferred_skills %}
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.75rem;">
+          Preferred Skills
+        </h3>
+        <div style="color: var(--navy-700); line-height: 1.8; margin-bottom: 1.5rem; white-space: pre-line;">
+          {{ internship.preferred_skills }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Right Column: Application Action Card -->
+  <div>
+    {% if not session.get('user_id') %}
+      <!-- Unauthenticated Visitor -->
+      <div class="card" style="text-align: center; border-top: 4px solid var(--navy-900);">
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.5rem;">
+          Ready to Apply?
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+          Create a candidate account or sign in to submit your resume for this position.
+        </p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary" style="width: 100%; margin-bottom: 0.75rem;">Sign In to Apply</a>
+        <a href="{{ url_for('register') }}" class="btn btn-secondary" style="width: 100%;">Create Account</a>
+      </div>
+
+    {% elif session.get('user_role') == 'admin' %}
+      <!-- Admin Management Box -->
+      <div class="card" style="border-top: 4px solid var(--purple);">
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.5rem;">
+          Administrative Console
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">
+          You are viewing this listing in administrative mode.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <a href="{{ url_for('admin_edit_internship', internship_id=internship.id) }}" class="btn btn-secondary" style="width: 100%;">
+            ✏️ Edit Position
+          </a>
+          <a href="{{ url_for('admin_applications', internship_id=internship.id) }}" class="btn btn-primary" style="width: 100%;">
+            📋 View Applicants
+          </a>
+        </div>
+      </div>
+
+    {% elif existing_application %}
+      <!-- Already Applied -->
+      <div class="card" style="border-top: 4px solid var(--success);">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.5rem;">✅</span>
+          <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--navy-900);">Application Submitted</h3>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">
+          You submitted your application on <strong>{{ existing_application.applied_at[:10] }}</strong>.
+        </p>
+
+        <div style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius); margin-bottom: 1.25rem; border: 1px solid var(--border-color);">
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">
+            Current Pipeline Status
+          </div>
+          <div style="margin-top: 0.25rem;">
+            <span class="badge badge-{{ existing_application.status|lower|replace(' ', '-') }}" style="font-size: 0.9rem; padding: 0.35rem 0.85rem;">
+              {{ existing_application.status }}
+            </span>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <a href="{{ url_for('view_resume', filename=existing_application.resume_filename) }}" target="_blank" class="btn btn-secondary" style="width: 100%;">
+            📄 View Submitted Resume
+          </a>
+          <a href="{{ url_for('student_applications') }}" class="btn btn-outline" style="width: 100%;">
+            Track All Applications
+          </a>
+        </div>
+      </div>
+
+    {% else %}
+      <!-- Apply Form -->
+      <div class="card" style="border-top: 4px solid var(--primary);">
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.5rem;">
+          Apply for this Position
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;">
+          Submit your candidate profile and resume for review by the hiring team.
+        </p>
+
+        <form method="POST" action="{{ url_for('apply_internship', internship_id=internship.id) }}" enctype="multipart/form-data">
+          {% if student_profile and student_profile.resume_filename %}
+            <div style="margin-bottom: 1.25rem; background: var(--primary-light); padding: 0.9rem; border-radius: var(--radius); border: 1px solid var(--primary-border);">
+              <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.875rem; color: var(--navy-900); cursor: pointer;">
+                <input type="radio" name="resume_source" value="profile" checked onclick="document.getElementById('upload-box').style.display='none';">
+                Use Master Resume on Profile (<code>{{ student_profile.resume_filename[:18] }}...</code>)
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.875rem; color: var(--navy-900); cursor: pointer; margin-top: 0.5rem;">
+                <input type="radio" name="resume_source" value="upload" onclick="document.getElementById('upload-box').style.display='block';">
+                Upload Custom Resume for this Role
+              </label>
+            </div>
+
+            <div id="upload-box" class="form-group" style="display: none;">
+              <label class="form-label" for="resume">Select Document</label>
+              <input type="file" id="resume" name="resume" class="form-control" accept=".pdf,.doc,.docx">
+              <span class="form-hint">Accepted formats: PDF, DOC, DOCX (Max 5 MB)</span>
+            </div>
+          {% else %}
+            <input type="hidden" name="resume_source" value="upload">
+            <div class="form-group">
+              <label class="form-label" for="resume">Resume Document *</label>
+              <input type="file" id="resume" name="resume" class="form-control" accept=".pdf,.doc,.docx" required>
+              <span class="form-hint">Accepted formats: PDF, DOC, DOCX (Max 5 MB)</span>
+            </div>
+          {% endif %}
+
+          <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 0.75rem; padding: 0.75rem;">
+            Submit Application
+          </button>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

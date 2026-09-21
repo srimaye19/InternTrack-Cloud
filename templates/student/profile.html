@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidate Profile | InternTrack{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 0 auto;">
+  <!-- Profile Completion Header -->
+  <div class="profile-completion-card" style="margin-bottom: 2rem;">
+    <div class="completion-header">
+      <div>
+        <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--navy-900);">Candidate Profile</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Keep your professional details updated so employers have complete information.
+        </p>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Profile Strength</span>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary);">
+          {{ profile_completion }}%
+        </div>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" style="width: {{ profile_completion }}%;"></div>
+    </div>
+  </div>
+
+  <!-- Primary Resume Management Card -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">Professional Resume Document</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem;">
+          Attach your master resume to your profile for one-click application submission.
+        </p>
+      </div>
+    </div>
+
+    {% if user.resume_filename %}
+      <div style="display: flex; justify-content: space-between; align-items: center; background: var(--gray-50); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="font-size: 2rem;">📄</div>
+          <div>
+            <strong style="color: var(--navy-900); font-size: 0.95rem;">Current Resume on File</strong>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              File ID: <code>{{ user.resume_filename }}</code>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="{{ url_for('view_resume', filename=user.resume_filename) }}" target="_blank" class="btn btn-secondary btn-sm">
+            👁️ View Document
+          </a>
+          <form method="POST" action="{{ url_for('student_resume_delete') }}" class="form-confirm-action" data-confirm-message="Are you sure you want to delete your stored resume?" style="display: inline;">
+            <button type="submit" class="btn btn-danger btn-sm">
+              🗑️ Remove
+            </button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <div style="padding: 1.5rem; background: var(--gray-50); border: 1px dashed var(--gray-300); border-radius: var(--radius); text-align: center; margin-bottom: 1.25rem;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+        <strong style="color: var(--navy-900);">No resume document uploaded yet</strong>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Upload your resume in PDF, DOC, or DOCX format (Max 5 MB).
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Upload / Replace Resume Form -->
+    <form method="POST" action="{{ url_for('student_resume_upload') }}" enctype="multipart/form-data" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 260px;">
+        <label class="form-label" for="resume">
+          {% if user.resume_filename %}Replace Stored Resume{% else %}Upload New Resume{% endif %}
+        </label>
+        <input type="file" id="resume" name="resume" class="form-control" accept=".pdf,.doc,.docx" required>
+        <span class="form-hint">Accepted formats: PDF, DOC, DOCX (Max 5 MB)</span>
+      </div>
+      <button type="submit" class="btn btn-secondary">
+        {% if user.resume_filename %}Replace Resume{% else %}Upload Resume{% endif %}
+      </button>
+    </form>
+  </div>
+
+  <!-- Profile Details Form -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Profile Information</h2>
+    </div>
+
+    <form method="POST" action="{{ url_for('student_profile') }}">
+      <!-- Personal Information -->
+      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--navy-900); margin-bottom: 1rem;">
+        1. Personal Information
+      </h3>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="name">Full Name *</label>
+          <input type="text" id="name" name="name" class="form-control" value="{{ user.name }}" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address (Read-Only)</label>
+          <input type="email" id="email" class="form-control" value="{{ user.email }}" disabled style="background: var(--gray-100); cursor: not-allowed;">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" class="form-control" value="{{ user.phone or '' }}" placeholder="e.g. +1 (555) 234-5678">
+      </div>
+
+      <!-- Education Section -->
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.75rem 0;">
+      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--navy-900); margin-bottom: 1rem;">
+        2. Academic Background
+      </h3>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="college">College / University</label>
+          <input type="text" id="college" name="college" class="form-control" value="{{ user.college or '' }}" placeholder="e.g. Stanford University">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="degree">Degree &amp; Major</label>
+          <input type="text" id="degree" name="degree" class="form-control" value="{{ user.degree or '' }}" placeholder="e.g. B.S. Software Engineering">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="graduation_year">Graduation Year</label>
+          <input type="text" id="graduation_year" name="graduation_year" class="form-control" value="{{ user.graduation_year or '' }}" placeholder="e.g. 2026">
+        </div>
+      </div>
+
+      <!-- Technical Skills Section -->
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.75rem 0;">
+      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--navy-900); margin-bottom: 1rem;">
+        3. Technical Skills
+      </h3>
+
+      <div class="form-group">
+        <label class="form-label" for="skills">Key Competencies (Comma-separated)</label>
+        <input type="text" id="skills" name="skills" class="form-control" value="{{ user.skills or '' }}" placeholder="e.g. Python, Docker, SQL, AWS, Linux, Git, REST APIs">
+        <span class="form-hint">List your programming languages, cloud skills, databases, and development tools.</span>
+      </div>
+
+      <!-- Professional Links Section -->
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.75rem 0;">
+      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--navy-900); margin-bottom: 1rem;">
+        4. Professional Links
+      </h3>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="linkedin_url">LinkedIn URL</label>
+          <input type="url" id="linkedin_url" name="linkedin_url" class="form-control" value="{{ user.linkedin_url or '' }}" placeholder="https://linkedin.com/in/username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="github_url">GitHub URL</label>
+          <input type="url" id="github_url" name="github_url" class="form-control" value="{{ user.github_url or '' }}" placeholder="https://github.com/username">
+        </div>
+      </div>
+
+      <!-- Password Update Section -->
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.75rem 0;">
+      <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--navy-900); margin-bottom: 1rem;">
+        5. Security &amp; Password (Optional)
+      </h3>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="current_password">Current Password</label>
+          <input type="password" id="current_password" name="current_password" class="form-control" placeholder="Required only if changing password">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="new_password">New Password</label>
+          <input type="password" id="new_password" name="new_password" class="form-control" minlength="6" placeholder="Min 6 characters">
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 2rem;">
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

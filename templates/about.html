@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}About InternTrack | Discover opportunities. Build your future.{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 0 auto; padding: 1.5rem 0;">
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <span class="landing-hero-tag">About InternTrack</span>
+    <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--navy-900); margin-top: 0.5rem;">
+      Empowering the Next Generation of Technical Talent
+    </h1>
+    <p style="font-size: 1.1rem; color: var(--navy-600); max-width: 680px; margin: 1rem auto 0 auto;">
+      InternTrack was founded to provide transparent, reliable, and accessible internship recruitment infrastructure connecting candidates with high-impact engineering roles.
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom: 2rem;">
+    <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--navy-900); margin-bottom: 1rem;">
+      Our Mission
+    </h2>
+    <p style="color: var(--navy-700); line-height: 1.8; margin-bottom: 1rem;">
+      Transitioning from academic knowledge into professional engineering requires access to quality internships with real mentorship and production responsibility. InternTrack simplifies this pathway by organizing verified technical postings, standardizing candidate profiles, and eliminating the opacity typically found in recruitment pipelines.
+    </p>
+    <p style="color: var(--navy-700); line-height: 1.8;">
+      With a commitment to straightforward usability and performance, our platform ensures every candidate application is logged, timestamped, and surfaced directly to decision-makers without algorithmic bias.
+    </p>
+  </div>
+
+  <div class="features-grid" style="margin-bottom: 2.5rem;">
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <h3 class="feature-title">Reliability First</h3>
+      <p class="feature-desc">
+        Built on battle-tested architectural patterns ensuring zero data loss, strict relational integrity, and high operational uptime.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h3 class="feature-title">Enterprise Security</h3>
+      <p class="feature-desc">
+        Engineered with cryptographic password hashing, signed sessions, and least-privilege role boundaries for all users.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3 class="feature-title">Pipeline Transparency</h3>
+      <p class="feature-desc">
+        Clear recruitment milestones ensure candidates always know their review status and what to expect next.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 2.5rem; background: var(--gray-50);">
+    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.5rem;">
+      Explore Career Opportunities Today
+    </h3>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+      Browse open positions across software engineering, cloud architecture, and data systems.
+    </p>
+    <a href="{{ url_for('internships_list') }}" class="btn btn-primary">Browse Internships</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}System Settings & Diagnostics | Admin | InternTrack{% endblock %}
+
+{% block admin_content %}
+<div class="card-header" style="border: none; padding-bottom: 0; margin-bottom: 1.5rem;">
+  <div>
+    <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--navy-900);">Platform Settings &amp; Diagnostics</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      Operational infrastructure status and runtime parameters.
+    </p>
+  </div>
+</div>
+
+<div style="max-width: 900px;">
+  <!-- Runtime Diagnostics Card -->
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-header">
+      <h2 class="card-title">Runtime Environment</h2>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <tbody>
+          <tr>
+            <td style="width: 35%; font-weight: 600; color: var(--navy-900);">Application Platform</td>
+            <td>{{ system_info.app_name }}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--navy-900);">Active Environment</td>
+            <td>
+              <span class="badge badge-applied">{{ system_info.environment }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--navy-900);">Debug Mode</td>
+            <td>
+              <span class="badge {% if system_info.debug_mode == 'Enabled' %}badge-under-review{% else %}badge-active{% endif %}">
+                {{ system_info.debug_mode }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--navy-900);">Relational Database Driver</td>
+            <td>
+              <strong>{{ system_info.database_driver }}</strong>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--navy-900);">Document Storage Provider</td>
+            <td>
+              <strong>{{ system_info.storage_driver }}</strong>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--navy-900);">Upload Size Ceiling</td>
+            <td>{{ system_info.max_upload_size }}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--navy-900);">Permitted Document Extensions</td>
+            <td><code>{{ system_info.allowed_file_types }}</code></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--navy-900);">Credential Hashing Standard</td>
+            <td>{{ system_info.password_algorithm }}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--navy-900);">Session Mechanism</td>
+            <td>{{ system_info.session_auth }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Operational Security Note Card -->
+  <div class="card" style="background: var(--gray-50); border-color: var(--border-color);">
+    <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.5rem;">
+      🔒 Security Baseline &amp; Environment Isolation
+    </h3>
+    <p style="font-size: 0.875rem; color: var(--navy-700); line-height: 1.6;">
+      In accordance with security best practices, sensitive parameters (cryptographic secrets, database connection strings, and storage credentials) are isolated in environment variables and are never rendered in administrative interfaces or client responses.
+    </p>
+  </div>
+</div>
+{% endblock %}

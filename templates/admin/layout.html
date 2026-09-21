@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block admin_wrapper %}
+<div class="admin-wrapper">
+  <!-- Admin Navigation Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      Management Console
+    </div>
+
+    <ul class="admin-nav">
+      <li>
+        <a href="{{ url_for('admin_dashboard') }}" class="admin-nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+          📊 Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('admin_internships') }}" class="admin-nav-link {% if 'internship' in request.endpoint %}active{% endif %}">
+          💼 Internships
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('admin_applications') }}" class="admin-nav-link {% if 'application' in request.endpoint %}active{% endif %}">
+          📋 Applications
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('admin_students') }}" class="admin-nav-link {% if 'student' in request.endpoint %}active{% endif %}">
+          👥 Students
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('admin_settings') }}" class="admin-nav-link {% if request.endpoint == 'admin_settings' %}active{% endif %}">
+          ⚙️ Settings
+        </a>
+      </li>
+      <li style="margin-top: 1.5rem; border-top: 1px solid var(--navy-700); padding-top: 0.75rem;">
+        <a href="{{ url_for('logout') }}" class="admin-nav-link" style="color: var(--danger-border);">
+          🚪 Sign Out
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Admin Main Workspace -->
+  <section class="admin-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <span>{{ message }}</span>
+              <button type="button" class="alert-close" aria-label="Close">&times;</button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block admin_content %}{% endblock %}
+  </section>
+</div>
+{% endblock %}
