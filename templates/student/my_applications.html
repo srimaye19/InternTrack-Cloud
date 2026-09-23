@@ -20,7 +20,7 @@
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
           <div>
             <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">
-              Application #{{ app.id }} &bull; Submitted {{ app.applied_at[:10] }}
+              Application #{{ app.id }} &bull; Submitted {{ app.applied_at.strftime('%Y-%m-%d') }}
             </div>
             <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--navy-900); margin-top: 0.25rem;">
               {{ app.title }}

@@ -29,19 +29,19 @@
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; background: var(--gray-50); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 2rem; font-size: 0.9rem;">
         <div>
           <span style="color: var(--text-muted); font-size: 0.8rem; display: block; font-weight: 600; text-transform: uppercase;">Location</span>
-          <strong style="color: var(--navy-900);">{{ internship.location }}</strong>
+          <strong style="color: var(--navy-900);">{{ internship.created_at.strftime('%Y-%m-%d') if internship.created_at else '' }}</strong><strong style="color: var(--navy-900);">{{ internship.created_at.strftime('%Y-%m-%d') if internship.created_at else '' }}</strong>
         </div>
         <div>
           <span style="color: var(--text-muted); font-size: 0.8rem; display: block; font-weight: 600; text-transform: uppercase;">Duration</span>
-          <strong style="color: var(--navy-900);">{{ internship.duration }}</strong>
+          <strong style="color: var(--navy-900);">{{ internship.created_at.strftime('%Y-%m-%d') if internship.created_at else '' }}</strong><strong style="color: var(--navy-900);">{{ internship.created_at.strftime('%Y-%m-%d') if internship.created_at else '' }}</strong>
         </div>
         <div>
           <span style="color: var(--text-muted); font-size: 0.8rem; display: block; font-weight: 600; text-transform: uppercase;">Deadline</span>
-          <strong style="color: var(--navy-900);">{{ internship.deadline }}</strong>
+          <strong style="color: var(--navy-900);">{{ internship.created_at.strftime('%Y-%m-%d') if internship.created_at else '' }}</strong><strong style="color: var(--navy-900);">{{ internship.created_at.strftime('%Y-%m-%d') if internship.created_at else '' }}</strong>
         </div>
         <div>
           <span style="color: var(--text-muted); font-size: 0.8rem; display: block; font-weight: 600; text-transform: uppercase;">Posted</span>
-          <strong style="color: var(--navy-900);">{{ internship.created_at[:10] }}</strong>
+          <strong style="color: var(--navy-900);">{{ internship.created_at.strftime('%Y-%m-%d') if internship.created_at else '' }}</strong><strong style="color: var(--navy-900);">{{ internship.created_at.strftime('%Y-%m-%d') if internship.created_at else '' }}</strong>
         </div>
       </div>
 
@@ -134,7 +134,7 @@
           <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--navy-900);">Application Submitted</h3>
         </div>
         <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">
-          You submitted your application on <strong>{{ existing_application.applied_at[:10] }}</strong>.
+          You submitted your application on <strong>{{ existing_application.applied_at.strftime('%Y-%m-%d') }}</strong>.You submitted your application on <strong>{{ existing_application.applied_at.strftime('%Y-%m-%d') }}</strong>.
         </p>
 
         <div style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius); margin-bottom: 1.25rem; border: 1px solid var(--border-color);">

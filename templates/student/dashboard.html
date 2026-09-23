@@ -90,7 +90,7 @@
                     <strong>{{ app.title }}</strong><br>
                     <span style="font-size: 0.825rem; color: var(--text-muted);">{{ app.company }} &bull; {{ app.internship_type }}</span>
                   </td>
-                  <td>{{ app.applied_at[:10] }}</td>
+                  <td>{{ app.applied_at.strftime('%Y-%m-%d') }}</td>
                   <td>
                     <span class="badge badge-{{ app.status|lower|replace(' ', '-') }}">
                       {{ app.status }}

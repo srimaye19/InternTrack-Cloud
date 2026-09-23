@@ -802,4 +802,4 @@ if __name__ == '__main__':
     port = Config.PORT
     debug_mode = Config.DEBUG
     print(f"[*] Starting InternTrack on http://127.0.0.1:{port} (Debug: {debug_mode})")
-    app.run(host='127.0.0.1', port=port, debug=debug_mode)
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
